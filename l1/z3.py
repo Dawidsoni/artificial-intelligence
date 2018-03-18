@@ -102,9 +102,9 @@ def get_blot_win_deck():
     return deck
 
 blot_func = (lambda x: get_blot_win_pbp(get_fig_full_deck(), x))
-print("Pbp for full deck: %.2f", blot_func(get_blot_full_deck()))
-print("Pbp for half deck: %.2f", blot_func(get_blot_half_deck()))
-print("Pbp for color deck: %.2f", blot_func(get_blot_color_deck()))
-print("Pbp for win deck: %.2f", blot_func(get_blot_win_deck()))
+print("Pbp for full deck: %.2f" % blot_func(get_blot_full_deck()))
+print("Pbp for half deck: %.2f" % blot_func(get_blot_half_deck()))
+print("Pbp for color deck: %.2f" %  blot_func(get_blot_color_deck()))
+print("Pbp for win deck: %.2f" % blot_func(get_blot_win_deck()))
 
 

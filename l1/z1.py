@@ -19,6 +19,9 @@ class GameState:
     def is_field_empty(self, field):
         return (field not in [self.king0_pos, self.rook0_pos, self.king1_pos])
 
+    def get_field_dist(self, field1, field2):
+        return (abs(field1[0] - field2[0]), abs(field1[1] - field2[1]))
+
     def get_repr(self):
         return (self.king0_pos, self.rook0_pos, self.king1_pos, self.player_num)
 
@@ -49,8 +52,7 @@ class GameState:
             return False
         if king_pos[0] == banned_x or king_pos[1] == banned_y:
             return False
-        dist_x = abs(king_pos[0] - opp_king_pos[0])
-        dist_y = abs(king_pos[1] - opp_king_pos[1])
+        dist_x, dist_y = self.get_field_dist(king_pos, opp_king_pos)
         return (dist_x > 1 or dist_y > 1)
 
     def get_king0_neighbours(self):
@@ -81,6 +83,16 @@ class GameState:
         else:
             return self.get_king1_neighbours()
 
+    def can_rook_be_beaten(self):
+        r_x, r_y = self.get_field_dist(self.rook0_pos, self.king1_pos)
+        if r_x > 1 or r_y > 1:
+            return False
+        k_x, k_y = self.get_field_dist(self.rook0_pos, self.king0_pos)
+        return (k_x > 1 or k_y > 1)
+
+    def is_final_state(self):
+        return len(self.get_neighbours()) == 0 and self.can_rook_be_beaten() == False
+
 def encode_position(pos_str):
     return (ord(pos_str[0]) - ord('a'), int(pos_str[1]) - 1)
 
@@ -105,9 +117,9 @@ def get_step_path(init_state):
     prev_state_map = {init_state: None}
     while len(state_queue) > 0:
         cur_state = state_queue.popleft()
-        neigh_list = cur_state.get_neighbours()
-        if len(neigh_list) == 0:
+        if cur_state.is_final_state():
             return construct_path(prev_state_map, cur_state)
+        neigh_list = cur_state.get_neighbours()
         for neigh in neigh_list:
             if neigh not in prev_state_map:
                 prev_state_map[neigh] = cur_state
